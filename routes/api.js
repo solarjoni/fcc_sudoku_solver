@@ -39,7 +39,6 @@ module.exports = function (app) {
         return res.json({ valid: false, conflict: conflicts })
       // return true if true
       res.json({ valid: true })
-      
     });
     
   app.route('/api/solve')
@@ -56,8 +55,5 @@ module.exports = function (app) {
         return res.json({ error: "Puzzle cannot be solved" })
       // return puzzle solution
       res.json({ solution: solution }) 
-
-
-      
     });
 };
