@@ -5,6 +5,8 @@ const server = require('../server');
 
 chai.use(chaiHttp);
 
+const testStrings = require("../controllers/puzzle-strings").puzzlesAndSolutions
+
 suite('Functional Tests', () => {
     suite('POST request to /api/solve', () => {
 
@@ -202,11 +204,12 @@ suite('Functional Tests', () => {
         
         test('12. puzzle placement with incorrect length: POST request to /api/check', (done) => {
             // Check a puzzle placement with incorrect length: POST request to /api/check
+            const puzzle = testStrings[4][0].replace('.', '')
             chai
                 .request(server)
                 .post('/api/check')
                 .send({
-                    puzzle: testStrings[4][0].replace('.', ''),
+                    puzzle: puzzle,
                     coordinate: "A3",
                     value: "7"
                 })

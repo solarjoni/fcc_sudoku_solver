@@ -45,7 +45,7 @@ module.exports = function (app) {
     .post((req, res) => {
       const puzzle = req.body.puzzle
       // error if no puzzle
-      if (!puzzle) return res.json({ error: "Required field missing "})
+      if (!puzzle) return res.json({ error: "Required field missing"})
       // validate puzzle
       const validate = solver.validate(puzzle)
       if (validate[0] == false) return res.json(validate[1])
