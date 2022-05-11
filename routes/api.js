@@ -17,8 +17,8 @@ module.exports = function (app) {
       const validate = solver.validate(puzzle)
       if (validate[0] === false) return res.json(validate[1])
       //check if coordinate and value are valid
-      const coordRe = /^[a-iA-I]\d$/gi
-      const valueRe = /^\d$/
+      const coordRe = /^[a-iA-I][1-9]$/gi
+      const valueRe = /^[1-9]$/
       if (coordRe.test(coord) === false)
         return res.json({ error: "Invalid coordinate" })
       if (valueRe.test(value) === false)
