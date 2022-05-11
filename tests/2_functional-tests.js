@@ -109,8 +109,8 @@ suite('Functional Tests', () => {
             .post('/api/check')
             .send({ 
                 puzzle: testStrings[4][0],
-                coordinate: "A1",
-                value: "1"
+                coordinate: "B1",
+                value: "2"
              })
             .end((err, res) => {
                 if (err) done(err)

@@ -2,18 +2,18 @@ class SudokuSolver {
   constructor() {
     this.isValid = this.isValid.bind(this)
     this.solve = this.solve.bind(this)
-    this.rowToNum = this.rowToNum(this)
+    this.rowToNum = this.rowToNum.bind(this)
   }
 
-  validate(puzzleString) {
+  validate(puzzle) {
     // error on invalid puzzle
     const re = /^[\d.]+$/gi
-    if (puzzleString.length != 81)
+    if (puzzle.length !== 81)
       return [false, { error: "Expected puzzle to be 81 characters long" }]
-    if(re.test(puzzleString) === false)
+    if(re.test(puzzle) === false)
       return [false, { error: "Invalid characters in puzzle" }]
     // return puzzle string to array of rows to solve and check placement
-    let arr = puzzleString.split("")
+    let arr = puzzle.split("")
     let a1 = [],
       a2 = [],
       a3 = [],
@@ -44,38 +44,39 @@ class SudokuSolver {
     let num
     // convert row letter to number
     rows.forEach((item, i) => {
+      // if (row === item) num = i
       if (row.toUpperCase() === item) num = i
     })
     return num
   }
 
-  checkRowPlacement(puzzleString, row, col, value) {
+  checkRowPlacement(puzzle, row, col, value) {
     row = this.rowToNum(row)
     col = col - 1
     let result = true
     // check if value is in row
-    puzzleString[row].forEach((item) => {
+    puzzle[row].forEach((item) => {
       if (value == item) result = "row"
     })
     // check if value is already in place
-    if (puzzleString[row][col] == value) result = true
+    if (puzzle[row][col] == value) result = true
     return result
   }
 
-  checkColPlacement(puzzleString, row, col, value) {
+  checkColPlacement(puzzle, row, col, value) {
     row = this.rowToNum(row)
     col = col - 1
     let result = true
     // check if value is on column
-    puzzleString.forEach((item) => {
+    puzzle.forEach((item) => {
       if (value == item[col]) result = "column"
     })
     // check if value is already in place
-    if (puzzleString[row][col] == value) result = true
+    if (puzzle[row][col] == value) result = true
     return result
   }
 
-  checkRegionPlacement(puzzleString, row, col, value) {
+  checkRegionPlacement(puzzle, row, col, value) {
     row = this.rowToNum(row)
     col = col - 1
     let result = true
@@ -83,36 +84,36 @@ class SudokuSolver {
     for (let i = 0; i < 9; i++) {
       const m = 3 * Math.floor(row / 3) + Math.floor(i / 3)
       const n = 3 * Math.floor(col / 3) + (i % 3)
-      if (value == puzzleString[m][n]) result = "region"
+      if (value == puzzle[m][n]) result = "region"
     }
     // check if value already in place
-    if (puzzleString[row][col] == value) result = true
+    if (puzzle[row][col] == value) result = true
     return result
   }
 
-  isValid(puzzleString, row, col, reg) {
+  isValid(puzzle, row, col, reg) {
     for (let i = 0; i < 9; i++) {
       const m = 3 * Math.floor(row / 3) + Math.floor(i / 3)
       const n = 3 * Math.floor(col / 3) + (i % 3)
-      if (puzzleString[row][i] == reg || puzzleString[i][col] == reg || puzzleString == reg) {
+      if (puzzle[row][i] == reg || puzzle[i][col] == reg || puzzle[m][n] == reg) {
         return false
       }
     }
     return true
   }
 
-    solve(puzzleString) {
+    solve(puzzle) {
       for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
-          if (puzzleString[row][col] == ".") {
+          if (puzzle[row][col] == ".") {
             for (let reg = 1; reg <= 9; reg++) {
-              if (this.isValid(puzzleString, row, col, reg)) {
-                puzzleString[row][col] = reg
+              if (this.isValid(puzzle, row, col, reg)) {
+                puzzle[row][col] = reg
                 // return array to string if exists for result solution
-                if (this.solve(puzzleString)) {
-                  return puzzleString.toString().replace(/,/g, "")
+                if (this.solve(puzzle)) {
+                  return puzzle.toString().replace(/,/g, "")
                 } else {
-                  puzzleString[row][col] = "."
+                  puzzle[row][col] = "."
                 }
               }
             }
