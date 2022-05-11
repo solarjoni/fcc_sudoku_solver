@@ -1,6 +1,5 @@
 'use strict';
 
-const { json } = require('express/lib/response');
 const SudokuSolver = require('../controllers/sudoku-solver.js');
 
 module.exports = function (app) {
@@ -10,9 +9,9 @@ module.exports = function (app) {
   app.route('/api/check')
     .post((req, res) => {
       const puzzle = req.body.puzzle
-      const cord = req.body.coordinate
+      const coord = req.body.coordinate
       const value = req.body.value
-      if (!puzzle || !cord || !value) 
+      if (!puzzle || !coord || !value) 
         return res.json({ error: "Required field(s) missing" })
       // check if puzzle is valid
       const validate = solver.validate(puzzle)
@@ -20,7 +19,7 @@ module.exports = function (app) {
       //check if coordinate and value are valid
       const coordRe = /^[a-iA-I]\d$/gi
       const valueRe = /^\d$/
-      if (coordRe.test(coord) == false)
+      if (coordRe.test(coord) === false)
         return res.json({ error: "Invalid coordinate" })
       if (valueRe.test(value) === false)
         return res.json({ error: "Invalid value" })
@@ -29,9 +28,9 @@ module.exports = function (app) {
       const col = coord.split("")[1]
       // check conflict
       let conflicts = []
-      const checkRow = solver.checkRow(validate[1], row, col, value)
-      const checkCol = solver.checkCol(validate[1], row, col, value)
-      const checkReg = solver.checkReg(validate[1], row, col, value)
+      const checkRow = solver.checkRowPlacement(validate[1], row, col, value)
+      const checkCol = solver.checkColPlacement(validate[1], row, col, value)
+      const checkReg = solver.checkRegionPlacement(validate[1], row, col, value)
       if (checkRow !== true) conflicts.push(checkRow)
       if (checkCol !== true) conflicts.push(checkCol)
       if (checkReg !== true) conflicts.push(checkReg)
@@ -39,25 +38,21 @@ module.exports = function (app) {
         return res.json({ valid: false, conflict: conflicts })
       // return true if true
       res.json({ valid: true })
-      
     });
     
   app.route('/api/solve')
     .post((req, res) => {
       const puzzle = req.body.puzzle
       // error if no puzzle
-      if (!puzzle) return res.json({ error: "Required field missing "})
+      if (!puzzle) return res.json({ error: "Required field missing"})
       // validate puzzle
       const validate = solver.validate(puzzle)
-      if (validate[0] == false) return res.json(validate[1])
+      if (validate[0] === false) return res.json(validate[1])
       // error if puzzle cannot be solved
       const solution = solver.solve(validate[1])
       if (solution === false)
         return res.json({ error: "Puzzle cannot be solved" })
       // return puzzle solution
       res.json({ solution: solution }) 
-
-
-      
     });
 };
